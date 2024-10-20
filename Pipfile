@@ -10,6 +10,7 @@ numpy = "*"
 plotly = "*"
 yfinance = "*"
 scikit-learn = "*"
+xgboost = "*"
 
 [dev-packages]
 
