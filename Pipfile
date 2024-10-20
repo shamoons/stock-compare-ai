@@ -8,6 +8,8 @@ streamlit = "*"
 pandas = "*"
 numpy = "*"
 plotly = "*"
+yfinance = "*"
+scikit-learn = "*"
 
 [dev-packages]
 
