@@ -12,12 +12,16 @@ start_date = (datetime.today().replace(year=datetime.today().year - 8)).strftime
 # Function to download historical data
 def download_data(ticker, start_date, end_date):
     try:
-        # Download data for each ticker
-        df = yf.download(ticker, start=start_date, end=end_date)[['Adj Close']].copy()  # Explicitly copy the slice
+        # Download data for each ticker with the required columns
+        df = yf.download(ticker, start=start_date, end=end_date)[['Open', 'High', 'Close', 'Adj Close', 'Volume']].copy()
         df.reset_index(inplace=True)
         df['ticker'] = ticker
-        df.rename(columns={'Adj Close': 'price', 'Date': 'business_date'}, inplace=True)
-        return df[['ticker', 'business_date', 'price']]
+        df.rename(columns={'Adj Close': 'adj_close', 'Date': 'business_date'}, inplace=True)
+        
+        # Round price-related columns to two decimal places
+        df[['Open', 'High', 'Close', 'adj_close']] = df[['Open', 'High', 'Close', 'adj_close']].round(2)
+        
+        return df[['ticker', 'business_date', 'Open', 'High', 'Close', 'adj_close', 'Volume']]
     except Exception as e:
         print(f"Error downloading data for {ticker}: {e}")
         return None
@@ -34,6 +38,6 @@ for ticker in tickers:
 combined_data = pd.concat(all_data)
 
 # Save to a CSV file
-combined_data.to_csv('eod_data_ticker_businessdate_price.csv', index=False)
+combined_data.to_csv('eod_data_full_2_decimal.csv', index=False)
 
-print("EOD data for the last 8 years has been saved to 'eod_data_ticker_businessdate_price.csv'")
+print("EOD data for the last 8 years with prices rounded to 2 decimal places has been saved to 'eod_data_full_2_decimal.csv'")
